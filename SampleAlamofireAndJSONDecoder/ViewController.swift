@@ -9,27 +9,33 @@
 import UIKit
 import Alamofire
 
-struct Country: Decodable {
+struct Course: Decodable {
     let name: String
-    let capital: String
+    let numberOfLessons: Int
+    
+    // Swift 4.0
+    private enum CodingKeys: String, CodingKey {
+        case numberOfLessons = "number_of_lessons"
+        case name
+    }
 }
 
 class ViewController: UIViewController {
 
-    let restUrl = URL(string: "https://restcountries.eu/rest/v2/all")
-    var countries = [Country]()
+    let restUrl = URL(string: "https://api.letsbuildthatapp.com/jsondecodable/courses_snake_case")
+    var courses = [Course]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         Alamofire.request(restUrl!).responseJSON { (response) in
             let result = response.data
             do {
-                self.countries = try JSONDecoder().decode([Country].self, from: result!)
-                for country in self.countries {
-                    print("\(country.name) : \(country.capital)")
+                self.courses = try JSONDecoder().decode([Course].self, from: result!)
+                for courses in self.courses {
+                    print("\(courses.name) : \(courses.numberOfLessons)")
                 }
-            } catch {
-                print("error")
+            } catch let jsonError{
+                print("error: \(jsonError)")
             }
         }
     }
