@@ -14,10 +14,10 @@ struct Course: Decodable {
     let numberOfLessons: Int
     
     // Swift 4.0
-    private enum CodingKeys: String, CodingKey {
-        case numberOfLessons = "number_of_lessons"
-        case name
-    }
+//    private enum CodingKeys: String, CodingKey {
+//        case numberOfLessons = "number_of_lessons"
+//        case name
+//    }
 }
 
 class ViewController: UIViewController {
@@ -29,8 +29,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         Alamofire.request(restUrl!).responseJSON { (response) in
             let result = response.data
+            let jsonDecoder = JSONDecoder()
+            jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
             do {
-                self.courses = try JSONDecoder().decode([Course].self, from: result!)
+                self.courses = try jsonDecoder.decode([Course].self, from: result!)
                 for courses in self.courses {
                     print("\(courses.name) : \(courses.numberOfLessons)")
                 }
